@@ -2,7 +2,7 @@ import sys
 import time
 import resource
 import numpy as np
-from search import Search
+import search 
 from state import State
 
 class Board:
@@ -91,13 +91,8 @@ def trace_path(last_pos):
 
 
 def main():
-    puzzle_state = sys.argv[2].split(",")
-    puzzle_state = list(map(int, puzzle_state)) # transforma tudo em int
-    pb = Board(puzzle_state)
 
     start_time = time.time()
-
-    search_depth, states, max_depth, nodes_expanded = Search().bfs(pb)
 
     config = [1,2,3,0,4,5,6,7,8]
 

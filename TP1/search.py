@@ -1,47 +1,50 @@
-import heapq
-import numpy as np
-from queue import PriorityQueue
-from collections import deque
+from collections import namedtuple
 
 '''
 Deiziane Natani da Silva 
 2015121980
 '''
-class Search:
-    '''
+
+'''
     Breadth-first Search (Busca em Largura)
     Busca sem informação
-    '''
-    def __init__(self):
-        self.path_to_solution = []
-        self.states = []
-        self.max_search_depth = 0
-        self.nodes_expanded = 0
+'''
+def bfs(start):
+    SearchPos = namedtuple('SearchPos', 'node, cost, depth, prev')
 
-    def bfs (self, board):
-        frontier = deque()
-        explored = set()
-        frontier.append(board)
+    position = SearchPos(start, 0, 0, None)
 
-        while frontier:
-            puzzle = frontier.popleft()
-            explored.add(tuple(puzzle.state))
+    # a fronteira contém posições ainda não exploradas
+    frontier = [position]
+    explored = set()
 
-            if puzzle.goal_test:
-                self.path_to_solution = []
-                self.path_trace(self.path_to_solution, puzzle)
-                return len(
-                    self.path_to_solution), self.states, self.max_search_depth, self.nodes_expanded
+    while len(frontier) > 0:
+        # posição atual é a primeira da fronteira
+        position = frontier.pop(0)
 
-            self.nodes_expanded += 1
+        node = position.node
 
-            children = puzzle.expand
+        # testa se já chegou no goal
+        if goal_test(node):
+            max_depth = max([pos.depth for pos in frontier])
+            Success = namedtuple('Success', 
+                        'position, max_depth, nodes_expanded')
+            success = Success(position, max_depth, len(explored))
+            return success
 
-            for c in children:
-                if tuple(c.state) not in explored:
-                    frontier.append(c)
-                    explored.add(tuple(c.state))
-                    self.max_search_depth = max(self.max_search_depth, c.depth)
+        # adiciona nós ja explorados
+        explored.add(node)
+
+        # todas as posições alcançadas a partir da posição atual são adicionadas à fronteira
+        for neighbor in node.successors():
+            new_position = SearchPos(neighbor, position.cost + 1,
+                                    position.depth + 1, position)
+            frontier_check = neighbor in [pos.node for pos in frontier]
+            if neighbor not in explored and not frontier_check:
+                frontier.append(new_position)
+
+    # impossível chegar no goal
+    return None
    
 
     '''
@@ -73,12 +76,6 @@ class Search:
     Hill Climbing, permitindo movimentos laterais.
     Busca Local
     '''
-    def path_trace(self, path_to_solution, child):
-        print("Tracing path...")
-        child.print_puzzle
-        while child.parent:
-            parent = child.parent
-            self.states.append(child.state)
-            path_to_solution.append(child)
-            child = parent
-            child.print_puzzle
+   
+def goal_test(state):
+    return str(state) == str(range(0, 9))
