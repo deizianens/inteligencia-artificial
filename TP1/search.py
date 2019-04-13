@@ -1,105 +1,143 @@
-from collections import namedtuple
-
+# encoding=UTF-8
 '''
-Deiziane Natani da Silva 
+Deiziane Natani da Silva
 2015121980
+
+Código baseado no código de Joonas Rouhiainen: https://github.com/rjoonas/AI-assignment-1
 '''
-def goal_test(state):
-    return str(state) == str(range(0, 9))
+import itertools
+from collections import deque
+from Queue import PriorityQueue
+from sys import stdout
+
+def result(iterations, queue, solvedBoard = None):
+  return {
+    "solved":     solvedBoard != None,
+    "iterations": iterations,
+    "queueSize":  len(queue),
+    "pathCost":   solvedBoard.moves if solvedBoard else None 
+  }
 
 '''
     Breadth-first Search (Busca em Largura)
     Busca sem informação
+
+    Fácil de implementar, porém usa mais memória
+    Fronteira usa uma queue fifo, e a estrutura de dados usada é uma dequeue
 '''
-def bfs(start):
-    SearchPos = namedtuple('SearchPos', 'node, cost, depth, prev')
+def bfs(root_node, animate_progress):
+  iterations = 0 
+  visited = set()
+  queue = deque([root_node])
 
-    position = SearchPos(start, 0, 0, None)
+  while len(queue) > 0:
+    iterations = iterations + 1
+    animate_progress(iterations)
 
-    # a fronteira contém posições ainda não exploradas
-    frontier = [position]
-    explored = set()
+    node = queue.popleft() # pega o nó da fronteira
+    visited.add(node.tilehash()) # marca nó corrente como visitado
 
-    while len(frontier) > 0:
-        # posição atual é a primeira da fronteira
-        position = frontier.pop(0)
+    if node.is_goal():
+      return result(iterations, queue, node)
 
-        node = position.node
+    queue.extend(
+      filter(
+        lambda legalMove: legalMove.tilehash() not in visited,
+        node.children()))
 
-        # testa se já chegou no goal
-        if goal_test(node):
-            max_depth = max([pos.depth for pos in frontier])
-            Success = namedtuple('Success', 'position, max_depth, nodes_expanded')
-            success = Success(position, max_depth, len(explored))
-            return success
+  # Não encontrou uma solução
+  return result(iterations, queue)
 
-        # adiciona nós ja explorados
-        explored.add(node)
 
-        # todas as posições alcançadas a partir da posição atual são adicionadas à fronteira
-        for neighbor in node.successors():
-            new_position = SearchPos(neighbor, position.cost + 1, position.depth + 1, position)
-            frontier_check = neighbor in [pos.node for pos in frontier]
-
-            if neighbor not in explored and not frontier_check:
-                frontier.append(new_position)
-
-    # impossível chegar no goal
-    return None
-   
-
-    '''
+'''
     Iterative Deepening Search
     Busca sem informação
-    '''
+
+    Usa menos memória que o bfs, porém demora mais.
+    Fronteira usa uma queue lifo, e a estrutura de dados usada é uma lista
+
+'''
+def ids(root_node, animate_progress):
+  iterations = 0 
+
+  # Profundidade de 0 a infinito, começando do 0 para verificar se estado inicial é otimo
+  for depth in itertools.count(): 
+    queue = [root_node]
+    
+    # Guarda nós já visitados para o caso de encontrá-los novamente
+    visited = {} 
+
+    while len(queue) > 0:
+      iterations = iterations + 1
+      animate_progress(iterations)
+      
+      node = queue.pop() # pega nó da maior profundidade
+      visited[node.tilehash()] = node.moves # marca nó corrente como visitado
+
+      if node.is_goal():
+        return result(iterations, queue, node)
+     
+      if node.moves < depth:
+        queue.extend(
+          filter(
+            lambda child:
+              child.tilehash() not in visited or
+              visited[child.tilehash()] > child.moves,
+            node.children()))
+
+  # Não encontrou uma solução
+  return result(iterations, queue) 
 
 
-    '''
+'''
     Uniform-cost Search (Busca de custo uniforme)
     Busca sem informação
-    '''
+'''
 
-    '''
+'''
     A* Search
     Busca com informação
-    '''
-    def ast(self, start):
-        SearchPos = namedtuple('SearchPos', 'node, cost, depth, prev')
+    
+    Mais rápida que bfs e ids.
+    Fronteira usa uma priority queue ordenada pela função de estimação de custo.
+'''
+def astar(root_node, animate_progress, heuristic):
+  iterations = 0 
+  visited = set()
+  queue = PriorityQueue()
+  queue.put((0, root_node))
 
-        position = SearchPos(start, 0, 0, None)
+  # Custo estimado = custo acumulado + custo estimado pela heuristica
+  def estimate_cost(node): return node.moves + heuristic(node)
+  def queue_entry(node): return (estimate_cost(node), node)
 
-        # a fronteira contém posições ainda não exploradas
-        frontier = [position]
+  def unvisited_children(node):
+    return filter(
+      lambda child: child.tilehash() not in visited,
+      node.children())
 
-        explored = set()
-       
-        while len(frontier) > 0:
-            puzzle = heapq.heappop(frontier)
-            explored.add(tuple(puzzle.puzzle_state))
+  while not queue.empty():
+    iterations = iterations + 1
+    animate_progress(iterations)
 
-            if puzzle.goal_test:
-                self.path_to_solution = []
-                self.path_trace(self.path_to_solution, puzzle)
-                return len(
-                    self.path_to_solution), self.states, self.max_search_depth, self.nodes_expanded
+    node = queue.get()[1] # pega nó de maior prioridade
+    visited.add(node.tilehash()) # marca nó como visitado
 
-            self.nodes_expanded += 1
+    if node.is_goal():
+      return result(iterations, queue.queue, node) # checa se atingiu goal
 
-            children = puzzle.expand
+    for entry in map(queue_entry, unvisited_children(node)):
+      queue.put(entry)
 
-            for c in children:
-                if tuple(c.puzzle_state) not in explored:
-                    heapq.heappush(frontier, c)
-                    explored.add(tuple(c.puzzle_state))
-                    self.max_search_depth = max(self.max_search_depth, c.depth)
+  # Não encontrou uma solução
+  return result(iterations, queue)
 
-    '''
+'''
     Greedy Best-First Search
     Busca com informação
-    '''
+'''
 
-    '''
+'''
     Hill Climbing, permitindo movimentos laterais.
     Busca Local
-    '''
-   
+'''
