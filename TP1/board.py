@@ -18,17 +18,20 @@ Coord = namedtuple("Coord", "y x")
 # Its state consists of a numpy array of tiles and a moves count.
 
 '''
-     O 8-puzzle pode ser representado como uma lista de tamanho 9 (de 1 a 9)
-     9 representa o espaço vazio, onde é permitido que as peças se movam
+     O 8-puzzle pode ser representado como uma lista de tamanho 9 (de 0 a 8)
+     0 representa o espaço vazio, onde é permitido que as peças se movam
      Goal:
             1 | 2 | 3
             --|---|---
             4 | 5 | 6
             --|---|---
-            7 | 8 | 9
-    '''
+            7 | 8 | 0
+'''
 def goal_tiles():
-  return np.arange(1,10).reshape(3,3)
+    g = np.arange(1, 10)
+    g[8] = 0
+    g = np.reshape(g, (3,3))
+    return g
 
 # verifica o local exato que um numero deve ficar
 def goal_coord(tile_id):
@@ -73,7 +76,7 @@ class Board:
         swapped_tiles = np.copy(self.tiles)
         
         swapped_tiles[old_empty.y][old_empty.x] = self.tiles[coord.y][coord.x]
-        swapped_tiles[coord.y][coord.x] = 9
+        swapped_tiles[coord.y][coord.x] = 0
 
         return Board(swapped_tiles, self.moves + 1)
 

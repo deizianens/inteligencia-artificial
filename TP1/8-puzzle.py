@@ -9,7 +9,7 @@ from sys import stdout
 import datetime as dt
 
 from board import Board
-from search import bfs, iddfs, a_star
+from search import bfs, ids, ucs, astar
 
 def run_timed(algorithm, board, heuristic = None):
   # Write a dot to stdout every twenty thousand iterations.
@@ -37,21 +37,24 @@ def print_result(result):
 
 def main():
   # puzzle inicial
-  board = Board([[7,2,4],
-                 [5,0,6],
-                 [8,3,1]])
+  board = Board([[1,8,2],
+                 [0,4,3],
+                 [7,6,5]])
 
-  stdout.write("  a) Uninformed breadth-first search")
-  print_result(run_timed(bfs, board))
+  # stdout.write("  a) Uninformed breadth-first search")
+  # print_result(run_timed(bfs, board))
 
-  stdout.write("  b) Iterative deepening depth-first search")
-  print_result(run_timed(ids, board))
+  # stdout.write("  b) Iterative deepening depth-first search")
+  # print_result(run_timed(ids, board))
 
-  stdout.write("  c I) A* search using number of misplaced tiles heuristic")
-  print_result(run_timed(astar, board, lambda b: b.count_misplaced()))
+  stdout.write("  c) Uniform cost search")
+  print_result(run_timed(ucs, board))
 
-  stdout.write("  c II) A* search using sum of manhattan distances heuristic")
-  print_result(run_timed(astar, board, lambda b: b.manhattan_distances_sum()))
+  # stdout.write("  c I) A* search using number of misplaced tiles heuristic")
+  # print_result(run_timed(astar, board, lambda b: b.count_misplaced()))
+
+  # stdout.write("  c II) A* search using sum of manhattan distances heuristic")
+  # print_result(run_timed(astar, board, lambda b: b.manhattan_distances_sum()))
 
 # Execute solver only when running this module
 if __name__ == "__main__":
