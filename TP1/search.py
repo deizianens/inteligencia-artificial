@@ -115,6 +115,7 @@ def ids(root_node, animate_progress):
 
     - Usa a priority queue.
 '''
+# ERRO!!!!-------------------------------------------------------------
 def ucs(root_node, animate_progress):
   iterations = 0 
 
@@ -206,10 +207,16 @@ def gbfs(root_node, animate_progress, heuristic):
   def estimate_cost(node): return heuristic(node)
   def queue_entry(node): return (estimate_cost(node), node)
 
+  def unvisited_children(node):
+    return filter(
+      lambda child: child.tilehash() not in visited,
+      node.children())
 
   while not queue.empty():
     iterations = iterations + 1
     animate_progress(iterations)
+
+    # print(queue.get()[1])
 
     node = queue.get()[1] # pega nó de maior prioridade
     visited.add(node.tilehash()) # marca nó como visitado
@@ -218,8 +225,7 @@ def gbfs(root_node, animate_progress, heuristic):
       return result(iterations, queue.queue, 1, node) # checa se atingiu goal
 
     # checo se os vizinhos tem menor custo
-    for entry in map(queue_entry, node.children()):
-      if entry <  
+    for entry in map(queue_entry, unvisited_children(node)):
       queue.put(entry)
 
   # Não encontrou uma solução

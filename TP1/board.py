@@ -46,6 +46,8 @@ class Board:
         # Enforce immutability to avoid bugs.
         self.tiles.flags.writeable = False 
     
+    def get_tiles(self):
+        return self.tiles
 
     # acha a coordenada de um número especifico
     def find_tile(self, tile_id):
@@ -78,24 +80,29 @@ class Board:
         
         swapped_tiles[old_empty.y][old_empty.x] = self.tiles[coord.y][coord.x]
         swapped_tiles[coord.y][coord.x] = 0
-
-        return Board(swapped_tiles, self.moves + 1)
+        
+        aux = Board(swapped_tiles, self.moves + 1)
+        print(aux.get_tiles())
+        return aux
 
 
     def find_neighbors(self, coord):
         def delta_to_coord(delta):
             return Coord(coord.y + delta[0], coord.x + delta[1]) 
-        
+    
         return set(filter(self.coord_valid, map(delta_to_coord, [(0,1), (1,0), (0,-1), (-1,0)])))
 
 
     def legal_moves(self):
-        return self.find_neighbors(self.find_empty())
+        l = self.find_neighbors(self.find_empty())
+        return l
 
 
     # lista de movimentos que podem ser feitos
     def children(self):
-        return map(self.move_empty_to, self.legal_moves())
+        c = map(self.move_empty_to, self.legal_moves())
+        print("\n")
+        return c
 
 
     # SHA1 hashcode for comparing tiles, doesn't check move count.
