@@ -151,6 +151,10 @@ def ucs(root_node, animate_progress):
     A* Search
     Busca com informação
     
+    -  Expandir o nó que pertence ao caminho com um menor custo associado.
+    - Função de avaliação: f(n) = g(n) + h(n), onde g(n) dá o valor do custo do caminho percorrido desde
+      a raiz até o nó e h(n) o custo mais barato do nó até o goal.
+
     Mais rápida que bfs e ids.
     Fronteira usa uma priority queue ordenada pela função de estimação de custo.
 '''
@@ -188,9 +192,67 @@ def astar(root_node, animate_progress, heuristic):
 '''
     Greedy Best-First Search
     Busca com informação
+
+    - Expande nós com menor custo até o goal.
+    - Função de avaliação: f(n) = h(n)
 '''
+def gbfs(root_node, animate_progress, heuristic):
+  iterations = 0 
+  visited = set()
+  queue = PriorityQueue()
+  queue.put((0, root_node))
+
+  # Custo estimado = custo estimado pela heuristica
+  def estimate_cost(node): return heuristic(node)
+  def queue_entry(node): return (estimate_cost(node), node)
+
+
+  while not queue.empty():
+    iterations = iterations + 1
+    animate_progress(iterations)
+
+    node = queue.get()[1] # pega nó de maior prioridade
+    visited.add(node.tilehash()) # marca nó como visitado
+
+    if node.is_goal():
+      return result(iterations, queue.queue, 1, node) # checa se atingiu goal
+
+    # checo se os vizinhos tem menor custo
+    for entry in map(queue_entry, node.children()):
+      if entry <  
+      queue.put(entry)
+
+  # Não encontrou uma solução
+  return result(iterations, 0, queue)
 
 '''
-    Hill Climbing, permitindo movimentos laterais.
+    Hill Climbing, permitindo movimentos laterais (interrompendo depois de k tentativas).
     Busca Local
+
+    - Política de busca local cujos movimentos se dão impreterivelmente na direção de valores 
+      crescentes (no caso, não decrescentes) da função objetivo.
+    - Termina quando um pico (mínimo ou máximo) é alcançado.
+
+    Utiliza pouca memória (constante)
 '''
+def hc(root_node, animate_progress, heuristic):
+  iterations = 0 
+
+  queue = deque([root_node])
+
+  while len(queue) > 0:  # verifica se a vizinhança não esta vazia
+    iterations = iterations + 1
+    animate_progress(iterations)
+
+    node = queue.pop() 
+
+    if node.is_goal():
+      return result(iterations, queue, 1, node)
+
+    # Custo estimado = custo estimado pela heuristica
+    def estimate_cost(node): return heuristic(node)
+    def queue_entry(node): return (estimate_cost(node), node)
+   
+
+  # Não encontrou uma solução
+  return result(iterations, queue, 1)

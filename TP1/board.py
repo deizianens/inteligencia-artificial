@@ -53,6 +53,7 @@ class Board:
         np.concatenate(np.where(self.tiles == tile_id)))
 
 
+    # quantidade de numeros fora do lugar
     def count_misplaced(self):
         return np.count_nonzero(self.tiles != goal_tiles())
 
@@ -108,7 +109,10 @@ class Board:
         return spatial.distance.cityblock(goal_coord(tile_id), self.find_tile(tile_id))  
 
 
-    # Soma das distâncias de Manhattan para todas as posições
+    ''' Soma das distâncias de Manhattan para todas as posições
+        -  É a soma das distâncias entre as peças e suas
+        respectivas posições
+    '''
     def manhattan_distances_sum(self):
         return sum(map(lambda tile_id: self.manhattan_to_goal(tile_id), np.nditer(self.tiles)))
 
