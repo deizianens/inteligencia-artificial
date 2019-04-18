@@ -193,6 +193,7 @@ def astar(root_node, animate_progress, heuristic):
   # Não encontrou uma solução
   return result(iterations, 0, queue)
 
+
 '''
     Greedy Best-First Search
     Busca com informação
@@ -246,22 +247,65 @@ def gbfs(root_node, animate_progress, heuristic):
 '''
 def hc(root_node, animate_progress, heuristic):
   iterations = 0 
-
   queue = deque([root_node])
+  eq = 0
+  k = 3
 
+  def lesser_than(node_cost):
+    def myfilter(x):
+      print(x[0], node_cost[0])
+      return x[0] < node_cost[0]
+    return myfilter
+  
+  def equal(node_cost):
+    def myfilter(x):
+        print(x[0], node_cost[0])
+        return x[0] == node_cost[0]
+    return myfilter
+
+
+   # Custo estimado = custo estimado pela heuristica
+  def estimate_cost(node): return heuristic(node)
+  def queue_entry(node): return [estimate_cost(node), node]
+
+    
   while len(queue) > 0:  # verifica se a vizinhança não esta vazia
     iterations = iterations + 1
     animate_progress(iterations)
 
-    node = queue.pop() 
-
+    if(iterations > 1):
+      aux = queue.pop() 
+      node = aux
+    else:
+      node = queue.popleft() 
+    
     if node.is_goal():
       return result(iterations, queue, 1, node)
 
-    # Custo estimado = custo estimado pela heuristica
-    def estimate_cost(node): return heuristic(node)
-    def queue_entry(node): return (estimate_cost(node), node)
-   
+    make_filter = lesser_than(queue_entry(node))  
+    make_filter2 = equal(queue_entry(node))  
+
+    flt = filter(make_filter, map(queue_entry, node.children()))
+    # checo se os vizinhos tem menor custo
+
+    if len(flt) == 0:
+      if eq < k:
+        flt = filter(make_filter2, map(queue_entry, node.children()))
+        if len(flt) == 0:
+          return result(iterations, queue, 1, node) # não achou nada melhor, maximo local
+        else:
+          for entry in flt:
+            # item = [i[1] for i in flt]
+            queue.extend(entry) # adiciona valor a fila
+            eq = eq + 1 # adiciona tentativa
+            print(eq)
+            break
+      else:
+        return result(iterations, queue, 1, node) # não achou nada melhor, maximo local  
+    else:
+      for entry in flt:
+          # item = [i[1] for i in flt]
+          queue.extend(entry) # adiciona valor a fila
 
   # Não encontrou uma solução
-  return result(iterations, queue, 1)
+  return result(iterations, queue, 1, node)
