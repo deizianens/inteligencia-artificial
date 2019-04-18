@@ -35,7 +35,7 @@ def result(iterations, queue, type, solvedBoard = None):
     assim em diante
 
     Fácil de implementar, porém usa mais memória
-    Fronteira usa uma queue fifo, e a estrutura de dados usada é uma dequeue
+    Fronteira usa uma queue fifo, e a estrutura de dados usada é uma deque
 '''
 def bfs(root_node, animate_progress):
   iterations = 0 
@@ -115,15 +115,16 @@ def ids(root_node, animate_progress):
 
     - Usa a priority queue.
 '''
-# ERRO!!!!-------------------------------------------------------------
 def ucs(root_node, animate_progress):
   iterations = 0 
+  aux = 0
 
   visited = set()
   queue = PriorityQueue()
   queue.put((0, root_node))  # coloca nó na lista de prioridade
 
-  def queue_entry(node): return (1, node)
+  def queue_entry(node): 
+    return (1+aux, node)
 
   def unvisited_children(node):
     return filter(
@@ -140,8 +141,10 @@ def ucs(root_node, animate_progress):
     if node.is_goal():
       return result(iterations, queue.queue, 1, node) # checa se atingiu goal
 
+
     for entry in map(queue_entry, unvisited_children(node)):
       queue.put(entry)
+      aux = aux + 1 # apenas pra fazer com que a priority queue se comporte como uma fifo
 
   # Não encontrou uma solução
   return result(iterations, 0, queue)

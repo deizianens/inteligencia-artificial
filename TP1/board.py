@@ -12,7 +12,7 @@ from hashlib import sha1
 
 # Decorate coordinate tuples to make code more readable.
 # (y, x) order was chosen to match numpy's array indexing style.
-Coord = namedtuple("Coord", "y x")
+Coord = namedtuple("Coord", "x y")
 
 # An immutable sliding puzzle board with (y, x) coordinate system.
 # Its state consists of a numpy array of tiles and a moves count.
@@ -40,7 +40,6 @@ def goal_coord(tile_id):
 
 class Board:
     def __init__(self, tiles, moves = 0):
-        # Stores tiles in numpy array with type int8 (byte, -128 to 127).
         self.tiles = np.array(tiles, dtype=np.int8) 
         self.moves = moves
         # Enforce immutability to avoid bugs.
@@ -69,8 +68,9 @@ class Board:
 
 
     def coord_valid(self, coord):
-        return (coord.y >= 0 and coord.x >= 0 and
-                coord.y < self.height() and coord.x < self.width())
+        # print(self.height(), self.width())
+        return (coord.x >= 0 and coord.y >= 0 and
+                coord.x < self.height() and coord.y < self.width())
 
 
     # move uma peça de posição
@@ -78,8 +78,8 @@ class Board:
         old_empty = self.find_empty()
         swapped_tiles = np.copy(self.tiles)
         
-        swapped_tiles[old_empty.y][old_empty.x] = self.tiles[coord.y][coord.x]
-        swapped_tiles[coord.y][coord.x] = 0
+        swapped_tiles[old_empty.x][old_empty.y] = self.tiles[coord.x][coord.y]
+        swapped_tiles[coord.x][coord.y] = 0
         
         aux = Board(swapped_tiles, self.moves + 1)
         print(aux.get_tiles())
@@ -88,9 +88,9 @@ class Board:
 
     def find_neighbors(self, coord):
         def delta_to_coord(delta):
-            return Coord(coord.y + delta[0], coord.x + delta[1]) 
+            return Coord(coord.x + delta[0], coord.y + delta[1]) 
     
-        return set(filter(self.coord_valid, map(delta_to_coord, [(0,1), (1,0), (0,-1), (-1,0)])))
+        return set(filter(self.coord_valid, map(delta_to_coord, [(0,-1), (0,1), (-1,0), (1,0)]))) # ordem: esquerda, direita, cima, baixo
 
 
     def legal_moves(self):

@@ -38,26 +38,26 @@ def print_result(result):
 def main():
   # puzzle inicial
   board = Board([[1,2,3],
-                 [4,8,0],
-                 [7,6,5]])
+                 [4,0,6],
+                 [7,5,8]])
 
-  # stdout.write("  a) Uninformed breadth-first search")
+  # stdout.write("  a) Uninformed breadth-first search\n")
   # print_result(run_timed(bfs, board))
 
-  # stdout.write("  b) Iterative deepening depth-first search")
+  # stdout.write("  b) Iterative deepening depth-first search\n")
   # print_result(run_timed(ids, board))
 
-  # stdout.write("  c) Uniform cost search")
-  # print_result(run_timed(ucs, board))
+  stdout.write("  c) Uniform cost search\n")
+  print_result(run_timed(ucs, board))
 
-  # stdout.write("  d I) A* search using number of misplaced tiles heuristic")
+  # stdout.write("  d I) A* search using number of misplaced tiles heuristic\n")
   # print_result(run_timed(astar, board, lambda b: b.count_misplaced()))
 
-  # stdout.write("  d II) A* search using sum of manhattan distances heuristic")
+  # stdout.write("  d II) A* search using sum of manhattan distances heuristic\n")
   # print_result(run_timed(astar, board, lambda b: b.manhattan_distances_sum()))
 
-  stdout.write("  e) Greedy best-first search")
-  print_result(run_timed(gbfs, board, lambda b: b.manhattan_distances_sum()))
+  # stdout.write("  e) Greedy best-first search\n")
+  # print_result(run_timed(gbfs, board, lambda b: b.manhattan_distances_sum()))
 
 # Execute solver only when running this module
 if __name__ == "__main__":
