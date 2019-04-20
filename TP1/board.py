@@ -60,7 +60,10 @@ class Board:
 
 
     def find_empty(self): return self.find_tile(0)
-    def is_goal(self): return self.count_misplaced() == 0 
+    def is_goal(self): 
+        if self.count_misplaced() == 0:
+            print(self.get_tiles())
+        return self.count_misplaced() == 0 
     
 
     def height(self): return self.tiles.shape[0] 
@@ -82,7 +85,7 @@ class Board:
         swapped_tiles[coord.x][coord.y] = 0
         
         aux = Board(swapped_tiles, self.moves + 1)
-        print(aux.get_tiles())
+        # print(aux.get_tiles())
         return aux
 
 
@@ -101,7 +104,7 @@ class Board:
     # lista de movimentos que podem ser feitos
     def children(self):
         c = map(self.move_empty_to, self.legal_moves())
-        print("\n")
+        # print("\n")
         return c
 
 

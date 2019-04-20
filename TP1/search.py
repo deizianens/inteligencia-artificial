@@ -18,7 +18,7 @@ def result(iterations, queue, type, solvedBoard = None):
       "queueSize":  len(queue),
       "pathCost":   solvedBoard.moves if solvedBoard else None 
     }
-  else: # qsize() pra priority queue
+  else: 
     return {
       "solved":     solvedBoard != None,
       "iterations": iterations,
@@ -253,13 +253,13 @@ def hc(root_node, animate_progress, heuristic):
 
   def lesser_than(node_cost):
     def myfilter(x):
-      print(x[0], node_cost[0])
+      # print(x[0], node_cost[0])
       return x[0] < node_cost[0]
     return myfilter
   
   def equal(node_cost):
     def myfilter(x):
-        print(x[0], node_cost[0])
+        # print(x[0], node_cost[0])
         return x[0] == node_cost[0]
     return myfilter
 
@@ -298,7 +298,6 @@ def hc(root_node, animate_progress, heuristic):
             # item = [i[1] for i in flt]
             queue.extend(entry) # adiciona valor a fila
             eq = eq + 1 # adiciona tentativa
-            print(eq)
             break
       else:
         return result(iterations, queue, 1, node) # não achou nada melhor, maximo local  

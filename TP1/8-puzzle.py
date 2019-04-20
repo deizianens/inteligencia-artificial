@@ -37,30 +37,37 @@ def print_result(result):
 
 def main():
   # puzzle inicial
-  board = Board([[2,8,3],
-                 [1,0,4],
-                 [7,6,5]])
+  board = Board([[1,0,2],
+                 [8,5,3],
+                 [4,7,6]])		
 
-  # stdout.write("  a) Uninformed breadth-first search\n")
-  # print_result(run_timed(bfs, board))
+  stdout.write("  a) Breadth-first search\n")
+  print_result(run_timed(bfs, board))
 
-  # stdout.write("  b) Iterative deepening depth-first search\n")
-  # print_result(run_timed(ids, board))
+  stdout.write("  b) Iterative deepening search\n")
+  print_result(run_timed(ids, board))
 
-  # stdout.write("  c) Uniform cost search\n")
-  # print_result(run_timed(ucs, board))
+  stdout.write("  c) Uniform cost search\n")
+  print_result(run_timed(ucs, board))
 
-  # stdout.write("  d I) A* search using number of misplaced tiles heuristic\n")
-  # print_result(run_timed(astar, board, lambda b: b.count_misplaced()))
+  stdout.write("  d I) A* search using number of misplaced tiles heuristic\n")
+  print_result(run_timed(astar, board, lambda b: b.count_misplaced()))
 
-  # stdout.write("  d II) A* search using sum of manhattan distances heuristic\n")
-  # print_result(run_timed(astar, board, lambda b: b.manhattan_distances_sum()))
+  stdout.write("  d II) A* search using sum of manhattan distances heuristic\n")
+  print_result(run_timed(astar, board, lambda b: b.manhattan_distances_sum()))
 
-  # stdout.write("  e) Greedy best-first search\n")
-  # print_result(run_timed(gbfs, board, lambda b: b.manhattan_distances_sum()))
+  stdout.write("  e) Greedy best-first search using number of misplaced tiles heuristic\n")
+  print_result(run_timed(gbfs, board, lambda b: b.count_misplaced()))
 
-  stdout.write("  f) Hill Climbing\n")
+  stdout.write("  e) Greedy best-first search using sum of manhattan distances heuristic\n")
+  print_result(run_timed(gbfs, board, lambda b: b.manhattan_distances_sum()))
+
+  stdout.write("  f) Hill Climbing using number of misplaced tiles heuristic\n")
   print_result(run_timed(hc, board, lambda b: b.count_misplaced()))
+
+  stdout.write("  f) Hill Climbing using sum of manhattan distances heuristic\n")
+  print_result(run_timed(hc, board, lambda b: b.count_misplaced()))
+
 
 # Execute solver only when running this module
 if __name__ == "__main__":
