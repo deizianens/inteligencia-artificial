@@ -3,7 +3,7 @@
 Deiziane Natani da Silva
 2015121980
 
-Código baseado em: https://github.com/rjoonas/AI-assignment-1
+Executar o main em 8-puzzle.py
 '''
 import numpy as np
 import scipy.spatial as spatial
@@ -56,6 +56,7 @@ class Board:
 
     # quantidade de numeros fora do lugar
     def count_misplaced(self):
+        # print(np.count_nonzero(self.tiles != goal_tiles()))
         return np.count_nonzero(self.tiles != goal_tiles())
 
 
@@ -124,5 +125,6 @@ class Board:
         respectivas posições
     '''
     def manhattan_distances_sum(self):
+        # print(sum(map(lambda tile_id: self.manhattan_to_goal(tile_id), np.nditer(self.tiles))))
         return sum(map(lambda tile_id: self.manhattan_to_goal(tile_id), np.nditer(self.tiles)))
 

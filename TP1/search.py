@@ -3,12 +3,14 @@
 Deiziane Natani da Silva
 2015121980
 
-Código baseado no código de Joonas Rouhiainen: https://github.com/rjoonas/AI-assignment-1
+Executar o main em 8-puzzle.py
 '''
 import itertools
 from collections import deque
 from Queue import PriorityQueue
 from sys import stdout
+
+ATTEMPTS = 10
 
 def result(iterations, queue, type, solvedBoard = None):
   if type == 1: 
@@ -249,7 +251,6 @@ def hc(root_node, animate_progress, heuristic):
   iterations = 0 
   queue = deque([root_node])
   eq = 0
-  k = 3
 
   def lesser_than(node_cost):
     def myfilter(x):
@@ -289,7 +290,7 @@ def hc(root_node, animate_progress, heuristic):
     # checo se os vizinhos tem menor custo
 
     if len(flt) == 0:
-      if eq < k:
+      if eq < ATTEMPTS:
         flt = filter(make_filter2, map(queue_entry, node.children()))
         if len(flt) == 0:
           return result(iterations, queue, 1, node) # não achou nada melhor, maximo local

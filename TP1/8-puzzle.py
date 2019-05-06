@@ -3,7 +3,7 @@
 Deiziane Natani da Silva
 2015121980
 
-Código baseado em: https://github.com/rjoonas/AI-assignment-1
+Instância do Board criada no método main
 '''
 from sys import stdout
 import datetime as dt
@@ -37,9 +37,38 @@ def print_result(result):
 
 def main():
   # puzzle inicial
-  board = Board([[1,0,2],
-                 [8,5,3],
-                 [4,7,6]])		
+
+  # Solução 4
+  board = Board([[1,5,2],
+                 [4,0,3],
+                 [7,8,6]])
+  
+  # Solução 7
+  # board = Board([[1,5,2],
+  #                [4,8,0],
+  #                [7,6,3]])
+  
+
+  # Solução 9
+  # board = Board([[1,0,2],
+  #                [8,5,3],
+  #                [4,7,6]])	
+
+  # Solução 17
+  # board = Board([[5,0,8],
+  #                [7,3,2],
+  #                [1,4,6]])      
+
+# # Solução 24
+  # board = Board([[8,4,7],
+  #                [5,6,2],
+  #                [1,3,0]])	
+
+# # Solução 31
+  # board = Board([[8,6,7],
+  #                [2,5,4],
+  #                [3,0,1]])            	
+      	
 
   stdout.write("  a) Breadth-first search\n")
   print_result(run_timed(bfs, board))
@@ -66,7 +95,7 @@ def main():
   print_result(run_timed(hc, board, lambda b: b.count_misplaced()))
 
   stdout.write("  f) Hill Climbing using sum of manhattan distances heuristic\n")
-  print_result(run_timed(hc, board, lambda b: b.count_misplaced()))
+  print_result(run_timed(hc, board, lambda b: b.manhattan_distances_sum()))
 
 
 # Execute solver only when running this module
