@@ -23,8 +23,9 @@ import numpy as np
 '''
 
 class Board:
-    def __init__(self, tiles):
-        self.tiles = np.array(tiles) 
+    def __init__(self, tiles, l, c):
+        t = np.array(tiles)
+        self.tiles =  np.reshape(t, (l,c))
     
     def get_tiles(self):
         return self.tiles
@@ -32,6 +33,7 @@ class Board:
     def height(self): return self.tiles.shape[0] 
     def width(self):  return self.tiles.shape[1]
 
+    def get_tile(self, i, j):
+        return self.tiles[i][j]
 
-
-    
+        

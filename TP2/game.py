@@ -1,6 +1,13 @@
 import random
 import numpy as np
 
+'''
+Deiziane Natani da Silva
+2015121980
+
+Executar o main em main.py
+'''
+
 class Game():
     def __init__(self, maze, alpha, epsilon, n_episodes, gama = 0.9):
         self.maze = maze
@@ -14,12 +21,11 @@ class Game():
         self.valid_states = self.get_valid_states()
 
     def create_qtable(self):
-        action_space_size = 4  # (up, down, left, right)
-        state_space_size = 4 # (-, 0, &, #)
+        r = {'0': [10.], '&': [-10.], '-': [0.], '#': [0.]}
 
-        q_table = np.zeros((state_space_size, action_space_size))
-        print(q_table)
-        return q_table
+        lines, cols = self.maze.height(), self.maze.width()
+        return [[r[self.maze.get_tile(i,j)] * 4 for j in range(cols)]
+                for i in range(lines)]
 
 
     # define a starting point for pacman    
@@ -28,18 +34,18 @@ class Game():
 
 
     def is_terminal(self, state):
-        return (self.maze[state[0]][state[1]] == '0' or self.maze[state[0]][state[1]] == '&')
+        return (self.maze.get_tile(state[0],state[1]) == '0' or self.maze.get_tile(state[0],state[1]) == '&')
 
 
     # return valid places where pacman can start (only '-')
     def get_valid_states(self):
-        lines, cols = self.maze.shape[0], self.maze.shape[1]
+        lines, cols = self.maze.height(), self.maze.width()
         return [(i, j) for i in range(lines) for j in range(cols)
-                if self.maze[i][j] == '-']
+                if self.maze.get_tile(i,j) == '-']
 
 
     def get_reward(self, state):
-        position = self.maze[state[0]][state[1]]
+        position = self.maze.get_tile(state[0],state[1])
         return self.rewards[position]
 
 
@@ -54,7 +60,7 @@ class Game():
     def move(self, state, act):
         action = self.moves[act]
         next_state = (state[0] + action[0], state[1] + action[1])
-        return state if self.maze[next_state[0]][next_state[1]] == '#' else next_state
+        return state if self.maze.get_tile(next_state[0],next_state[1]) == '#' else next_state
 
 
     def update_q_table(self, state, action, next_state):
@@ -64,8 +70,9 @@ class Game():
 
         self.q_table[state[0]][state[1]][action] += self.alpha * (r + self.gama * next_q_table - current_q_table)
 
+
     # runs the episodes
-    def run(self):
+    def play(self):
         total_episodes = 0
         episode = 0
         while True:
