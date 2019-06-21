@@ -36,4 +36,6 @@ class Board:
     def get_tile(self, i, j):
         return self.tiles[i][j]
 
-        
+    def enumerate(self):
+        t = self.tiles.tolist()
+        return enumerate(t)        

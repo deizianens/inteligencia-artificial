@@ -14,7 +14,7 @@ line, column, action, value
 '''
 def create_q_txt(maze, q):
     with open('q.txt', 'w') as f:
-        for i, line in enumerate(maze):
+        for i, line in maze.enumerate():
             for j, element in enumerate(line):
                 if element == '-':
                     for action, q_value in zip(direction, q[i][j]):
@@ -28,7 +28,7 @@ character corresponds to the action dictated by the policy (terminal states and 
 '''
 def create_pi_txt(maze, q):
     with open('pi.txt', 'w') as f:
-        for i, line in enumerate(maze):
+        for i, line in maze.enumerate():
             for j, element in enumerate(line):
                 if element == '-':
                     f.write(direction[np.argmax(q[i][j])])
@@ -52,7 +52,7 @@ def main(file_, alpha, epsilon, n_episodes):
 
   f.close()
   maze = Board(aux, lines, columns)         # create maze read by file
-  print(maze.get_tiles())
+  # print(maze.get_tiles())
   gama = 0.9                # discount rate
   game = Game(maze, alpha, epsilon, n_episodes, gama)
   q_learning = game.play()
