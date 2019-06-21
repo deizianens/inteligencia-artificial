@@ -1,3 +1,5 @@
+#!/bin/bash
+
 FILE=$1
 ALPHA=$2
 EPSILON=$3
