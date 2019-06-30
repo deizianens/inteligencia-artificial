@@ -74,18 +74,21 @@ class Game():
     # runs the episodes
     def play(self):
         total_episodes = 0
-        episode = 0
-        while True:
-            print("----- Episode ", episode, "------\n")
+        iterations  = 0
+        while total_episodes < self.n_episodes:
             state = self.initial_state()
-            while not self.is_terminal(state):
-                if total_episodes >= self.n_episodes:
-                    return self.q_table
+            iterations = 0
+            print("----- Episode ", total_episodes, "------\n")
 
+            while not self.is_terminal(state):
+                # print("Iteração ",iterations ,"\n")
+                iterations += 1
                 action = self.e_greedy(state)
                 next_state = self.move(state, action)
                 self.update_q_table(state, action, next_state)
-                total_episodes += 1
                 state = next_state
+            
+            total_episodes += 1
 
-            episode += 1
+        return self.q_table
+            
