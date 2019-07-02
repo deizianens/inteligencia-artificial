@@ -75,13 +75,15 @@ class Game():
     def play(self):
         total_episodes = 0
         iterations  = 0
+        n_iterations = 300
         while total_episodes < self.n_episodes:
             state = self.initial_state()
             iterations = 0
-            print("----- Episode ", total_episodes, "------\n")
+            # print("----- Episode ", total_episodes, "------\n")
 
             while not self.is_terminal(state):
-                # print("Iteração ",iterations ,"\n")
+                if iterations >= n_iterations:
+                    break
                 iterations += 1
                 action = self.e_greedy(state)
                 next_state = self.move(state, action)
